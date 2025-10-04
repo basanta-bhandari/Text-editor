@@ -1,107 +1,170 @@
-import ctypes as cts
-import ctypes.wintypes as wts
+import sys
 
 
-LF_FACESIZE = 32
-STD_OUTPUT_HANDLE = -11
+# ANSI escape codes for text formatting
+RESET = '\033[0m'
+BOLD = '\033[1m'
+DIM = '\033[2m'
+ITALIC = '\033[3m'
+UNDERLINE = '\033[4m'
+
+# Colors
+BLACK = '\033[30m'
+RED = '\033[31m'
+GREEN = '\033[32m'
+YELLOW = '\033[33m'
+BLUE = '\033[34m'
+MAGENTA = '\033[35m'
+CYAN = '\033[36m'
+WHITE = '\033[37m'
+
+# Bright colors
+BRIGHT_BLACK = '\033[90m'
+BRIGHT_RED = '\033[91m'
+BRIGHT_GREEN = '\033[92m'
+BRIGHT_YELLOW = '\033[93m'
+BRIGHT_BLUE = '\033[94m'
+BRIGHT_MAGENTA = '\033[95m'
+BRIGHT_CYAN = '\033[96m'
+BRIGHT_WHITE = '\033[97m'
+
+# Background colors
+BG_BLACK = '\033[40m'
+BG_RED = '\033[41m'
+BG_GREEN = '\033[42m'
+BG_YELLOW = '\033[43m'
+BG_BLUE = '\033[44m'
+BG_MAGENTA = '\033[45m'
+BG_CYAN = '\033[46m'
+BG_WHITE = '\033[47m'
 
 
-class CONSOLE_FONT_INFOEX(cts.Structure):
-    _fields_ = (
-        ("cbSize", wts.ULONG),
-        ("nFont", wts.DWORD),
-        ("dwFontSize", wts._COORD),
-        ("FontFamily", wts.UINT),
-        ("FontWeight", wts.UINT),
-        ("FaceName", wts.WCHAR * LF_FACESIZE)
-    )
+def bold(text):
+    """Make text bold. Example: print(bold('Hello'))"""
+    return f"{BOLD}{text}{RESET}"
 
 
-# Setup Windows API
-kernel32 = cts.WinDLL("Kernel32.dll")
-stdout = kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
+def italic(text):
+    """Make text italic. Example: print(italic('Hello'))"""
+    return f"{ITALIC}{text}{RESET}"
 
 
-def _get_font():
-    """Internal: Get current font settings."""
-    font = CONSOLE_FONT_INFOEX()
-    font.cbSize = cts.sizeof(CONSOLE_FONT_INFOEX)
-    kernel32.GetCurrentConsoleFontEx(stdout, False, cts.byref(font))
-    return font
+def underline(text):
+    """Underline text. Example: print(underline('Hello'))"""
+    return f"{UNDERLINE}{text}{RESET}"
 
 
-def _set_font(font):
-    """Internal: Apply font settings."""
-    kernel32.SetCurrentConsoleFontEx(stdout, False, cts.byref(font))
+def color(text, fg=None, bg=None):
+    """
+    Color text. Example: print(color('Hello', RED, BG_WHITE))
+    
+    Args:
+        text: Text to color
+        fg: Foreground color (RED, GREEN, BLUE, etc.)
+        bg: Background color (BG_RED, BG_GREEN, etc.)
+    """
+    result = ""
+    if fg:
+        result += fg
+    if bg:
+        result += bg
+    result += text + RESET
+    return result
 
 
-# Simple functions you can use
-def font_size(height):
-    """Change the font size. Example: font_size(20)"""
-    font = _get_font()
-    font.dwFontSize.Y = height
-    _set_font(font)
+def style(text, *styles):
+    """
+    Apply multiple styles. Example: print(style('Hello', BOLD, RED, UNDERLINE))
+    """
+    result = "".join(styles) + text + RESET
+    return result
 
 
-def font_bold():
-    """Make font bold. Example: font_bold()"""
-    font = _get_font()
-    font.FontWeight = 700
-    _set_font(font)
+# Simple print functions
+def print_bold(text):
+    """Print bold text. Example: print_bold('Hello')"""
+    print(f"{BOLD}{text}{RESET}")
 
 
-def font_normal():
-    """Make font normal weight. Example: font_normal()"""
-    font = _get_font()
-    font.FontWeight = 400
-    _set_font(font)
+def print_red(text):
+    """Print red text."""
+    print(f"{RED}{text}{RESET}")
 
 
-def font_name(name):
-    """Change font type. Example: font_name('Consolas')"""
-    font = _get_font()
-    font.FaceName = name
-    _set_font(font)
+def print_green(text):
+    """Print green text."""
+    print(f"{GREEN}{text}{RESET}")
 
 
-def show_font():
-    """Show current font settings."""
-    font = _get_font()
-    print(f"Font: {font.FaceName}")
-    print(f"Size: {font.dwFontSize.Y}")
-    print(f"Weight: {'Bold' if font.FontWeight >= 700 else 'Normal'}")
+def print_blue(text):
+    """Print blue text."""
+    print(f"{BLUE}{text}{RESET}")
+
+
+def print_yellow(text):
+    """Print yellow text."""
+    print(f"{YELLOW}{text}{RESET}")
+
+
+def print_success(text):
+    """Print success message (green, bold)."""
+    print(f"{BOLD}{GREEN}{text}{RESET}")
+
+
+def print_error(text):
+    """Print error message (red, bold)."""
+    print(f"{BOLD}{RED}{text}{RESET}")
+
+
+def print_warning(text):
+    """Print warning message (yellow, bold)."""
+    print(f"{BOLD}{YELLOW}{text}{RESET}")
+
+
+def print_info(text):
+    """Print info message (blue)."""
+    print(f"{BLUE}{text}{RESET}")
+
+
+def clear_screen():
+    """Clear the terminal screen."""
+    print('\033[2J\033[H', end='')
+
+
+def clear_line():
+    """Clear the current line."""
+    print('\033[2K', end='\r')
 
 
 # Demo
 if __name__ == "__main__":
-    print("=== Simple Console Font Demo ===\n")
+    print("=== Cross-Platform Console Text Formatter ===\n")
     
-    # Show current settings
-    print("Current font:")
-    show_font()
+    # Basic styles
+    print("Normal text")
+    print_bold("Bold text")
+    print(italic("Italic text"))
+    print(underline("Underlined text"))
     
-    # Try different sizes
-    print("\n--- Changing sizes ---")
-    font_size(12)
-    print("Size 12: Small text")
+    print("\n--- Colors ---")
+    print_red("Red text")
+    print_green("Green text")
+    print_blue("Blue text")
+    print_yellow("Yellow text")
     
-    font_size(16)
-    print("Size 16: Normal text")
+    print("\n--- Combined styles ---")
+    print(style("Bold + Red + Underline", BOLD, RED, UNDERLINE))
+    print(color("Green text on yellow background", GREEN, BG_YELLOW))
     
-    font_size(24)
-    print("Size 24: Large text")
+    print("\n--- Message types ---")
+    print_success("✓ Operation successful!")
+    print_error("✗ Error occurred!")
+    print_warning("⚠ Warning message")
+    print_info("ℹ Information")
     
-    # Try bold
-    print("\n--- Bold text ---")
-    font_bold()
-    print("This is BOLD!")
+    print("\n--- Build your own ---")
+    print(bold("This is bold"))
+    print(color("This is red", RED))
+    print(style("Bold red underlined!", BOLD, RED, UNDERLINE))
     
-    font_normal()
-    print("Back to normal weight")
-    
-    # Try different font
-    print("\n--- Different font ---")
-    font_name("Courier New")
-    print("Now using Courier New")
-    
-    print("\nDone! Use font_size(), font_bold(), font_normal(), font_name() in your code.")
+    print("\nDone! Works on Linux, Mac, and Windows!")
