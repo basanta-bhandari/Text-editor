@@ -136,6 +136,395 @@ def clear_line():
     print('\033[2K', end='\r')
 
 
+# Font size alternatives (visual tricks since actual font size isn't controllable)
+def print_small(text):
+    """Print smaller text using dim style."""
+    print(f"{DIM}{text}{RESET}")
+
+
+def print_big(text):
+    """Print bigger text - just bold and uppercase."""
+    print(f"{BOLD}{text.upper()}{RESET}")
+
+
+def print_header(text):
+    """Print a simple clean header."""
+    print(f"\n{BOLD}{text}{RESET}")
+
+
+def print_title(text):
+    """Print a title with simple underline."""
+    print(f"\n{BOLD}{text}{RESET}")
+    print("─" * len(text))
+
+
+def print_large(text, color_code=None, bold_it=True, underline_it=False, italic_it=False):
+    """
+    Print large stylized text with optional formatting.
+    
+    Args:
+        text: Text to print
+        color_code: Color (RED, GREEN, BLUE, etc.)
+        bold_it: Make it bold (default True)
+        underline_it: Underline it (default False)
+        italic_it: Make it italic (default False)
+    
+    Example: print_large("HELLO", RED, bold_it=True, underline_it=True)
+    """
+    # Build the style
+    styles = []
+    if bold_it:
+        styles.append(BOLD)
+    if underline_it:
+        styles.append(UNDERLINE)
+    if italic_it:
+        styles.append(ITALIC)
+    if color_code:
+        styles.append(color_code)
+    
+    # Apply styles
+    styled_text = "".join(styles) + text.upper() + RESET
+    
+    # Print with spacing for "large" effect
+    print(f"\n  {styled_text}  \n")
+
+
+def print_styled(text, color=None, bg=None, bold_it=False, italic_it=False, underline_it=False, dim_it=False):
+    """
+    Print text with any combination of styles.
+    
+    Args:
+        text: Text to print
+        color: Text color (RED, GREEN, BLUE, etc.)
+        bg: Background color (BG_RED, BG_GREEN, etc.)
+        bold_it: Make bold
+        italic_it: Make italic
+        underline_it: Underline
+        dim_it: Dim/faint
+    
+    Example: print_styled("Hello", RED, BG_WHITE, bold_it=True, underline_it=True)
+    """
+    styles = []
+    if bold_it:
+        styles.append(BOLD)
+    if italic_it:
+        styles.append(ITALIC)
+    if underline_it:
+        styles.append(UNDERLINE)
+    if dim_it:
+        styles.append(DIM)
+    if color:
+        styles.append(color)
+    if bg:
+        styles.append(bg)
+    
+    print("".join(styles) + text + RESET)
+
+
+def print_huge(text, color_code=None, bold_it=False):
+    """
+    Print HUGE ASCII art text. Works with A-Z and 0-9.
+    
+    Args:
+        text: Text to print (A-Z, 0-9, space, !)
+        color_code: Color to apply
+        bold_it: Make the ASCII art bold
+    
+    Example: print_huge("HELLO", RED, bold_it=True)
+    """
+    # ASCII art font dictionary
+    font = {
+        'A': [
+            "   ___   ",
+            "  / _ \\  ",
+            " / /_\\ \\ ",
+            "/  _  _\\ ",
+            "\\_/ \\_/ "
+        ],
+        'B': [
+            " ____  ",
+            "|  _ \\ ",
+            "| |_) |",
+            "|  _ < ",
+            "|_| \\_\\"
+        ],
+        'C': [
+            "  ____ ",
+            " / ___|",
+            "| |    ",
+            "| |___ ",
+            " \\____|"
+        ],
+        'D': [
+            " ____  ",
+            "|  _ \\ ",
+            "| | | |",
+            "| |_| |",
+            "|____/ "
+        ],
+        'E': [
+            " _____ ",
+            "|  ___|",
+            "| |__  ",
+            "|  __| ",
+            "|_____|"
+        ],
+        'F': [
+            " _____ ",
+            "|  ___|",
+            "| |__  ",
+            "|  __| ",
+            "|_|    "
+        ],
+        'G': [
+            "  ____ ",
+            " / ___|",
+            "| |  _ ",
+            "| |_| |",
+            " \\____|"
+        ],
+        'H': [
+            " _   _ ",
+            "| | | |",
+            "| |_| |",
+            "|  _  |",
+            "|_| |_|"
+        ],
+        'I': [
+            " ___ ",
+            "|_ _|",
+            " | | ",
+            " | | ",
+            "|___|"
+        ],
+        'J': [
+            "     _ ",
+            "    | |",
+            " _  | |",
+            "| |_| |",
+            " \\___/ "
+        ],
+        'K': [
+            " _  __",
+            "| |/ /",
+            "| ' / ",
+            "| . \\ ",
+            "|_|\\_\\"
+        ],
+        'L': [
+            " _     ",
+            "| |    ",
+            "| |    ",
+            "| |___ ",
+            "|_____|"
+        ],
+        'M': [
+            " __  __ ",
+            "|  \\/  |",
+            "| |\\/| |",
+            "| |  | |",
+            "|_|  |_|"
+        ],
+        'N': [
+            " _   _ ",
+            "| \\ | |",
+            "|  \\| |",
+            "| |\\  |",
+            "|_| \\_|"
+        ],
+        'O': [
+            "  ___  ",
+            " / _ \\ ",
+            "| | | |",
+            "| |_| |",
+            " \\___/ "
+        ],
+        'P': [
+            " ____  ",
+            "|  _ \\ ",
+            "| |_) |",
+            "|  __/ ",
+            "|_|    "
+        ],
+        'Q': [
+            "  ___  ",
+            " / _ \\ ",
+            "| | | |",
+            "| |_| |",
+            " \\__\\_\\"
+        ],
+        'R': [
+            " ____  ",
+            "|  _ \\ ",
+            "| |_) |",
+            "|  _ < ",
+            "|_| \\_\\"
+        ],
+        'S': [
+            " ____  ",
+            "/ ___| ",
+            "\\___ \\ ",
+            " ___) |",
+            "|____/ "
+        ],
+        'T': [
+            " _____ ",
+            "|_   _|",
+            "  | |  ",
+            "  | |  ",
+            "  |_|  "
+        ],
+        'U': [
+            " _   _ ",
+            "| | | |",
+            "| | | |",
+            "| |_| |",
+            " \\___/ "
+        ],
+        'V': [
+            "__     __",
+            "\\ \\   / /",
+            " \\ \\ / / ",
+            "  \\ V /  ",
+            "   \\_/   "
+        ],
+        'W': [
+            "__        __",
+            "\\ \\      / /",
+            " \\ \\ /\\ / / ",
+            "  \\ V  V /  ",
+            "   \\_/\\_/   "
+        ],
+        'X': [
+            "__  __",
+            "\\ \\/ /",
+            " \\  / ",
+            " /  \\ ",
+            "/_/\\_\\"
+        ],
+        'Y': [
+            "__   __",
+            "\\ \\ / /",
+            " \\ V / ",
+            "  | |  ",
+            "  |_|  "
+        ],
+        'Z': [
+            " _____ ",
+            "|__  / ",
+            "  / /  ",
+            " / /_  ",
+            "/____|"
+        ],
+        '0': [
+            "  ___  ",
+            " / _ \\ ",
+            "| | | |",
+            "| |_| |",
+            " \\___/ "
+        ],
+        '1': [
+            " _ ",
+            "/ |",
+            "| |",
+            "| |",
+            "|_|"
+        ],
+        '2': [
+            " ____  ",
+            "|___ \\ ",
+            "  __) |",
+            " / __/ ",
+            "|_____|"
+        ],
+        '3': [
+            " _____ ",
+            "|___ / ",
+            "  |_ \\ ",
+            " ___) |",
+            "|____/ "
+        ],
+        '4': [
+            " _  _   ",
+            "| || |  ",
+            "| || |_ ",
+            "|__   _|",
+            "   |_|  "
+        ],
+        '5': [
+            " ____  ",
+            "| ___| ",
+            "|___ \\ ",
+            " ___) |",
+            "|____/ "
+        ],
+        '6': [
+            "  __   ",
+            " / /_  ",
+            "| '_ \\ ",
+            "| (_) |",
+            " \\___/ "
+        ],
+        '7': [
+            " _____ ",
+            "|___  |",
+            "   / / ",
+            "  / /  ",
+            " /_/   "
+        ],
+        '8': [
+            "  ___  ",
+            " ( _ ) ",
+            " / _ \\ ",
+            "| (_) |",
+            " \\___/ "
+        ],
+        '9': [
+            "  ___  ",
+            " / _ \\ ",
+            "| (_) |",
+            " \\__, |",
+            "   /_/ "
+        ],
+        ' ': [
+            "    ",
+            "    ",
+            "    ",
+            "    ",
+            "    "
+        ],
+        '!': [
+            " _ ",
+            "| |",
+            "| |",
+            "|_|",
+            "(_)"
+        ]
+    }
+    
+    text = text.upper()
+    
+    # Check if all characters are supported
+    if not all(c in font for c in text):
+        print(f"{BOLD}[Unsupported characters - using fallback]{RESET}")
+        print_large(text, color_code)
+        return
+    
+    # Print each line of the ASCII art
+    style = ""
+    if bold_it:
+        style += BOLD
+    if color_code:
+        style += color_code
+    
+    for line_num in range(5):
+        line = ""
+        for char in text:
+            line += font[char][line_num]
+        print(f"{style}{line}{RESET}")
+    print()  # Extra newline at the end
+
+
 # Demo
 if __name__ == "__main__":
     print("=== Cross-Platform Console Text Formatter ===\n")
@@ -167,4 +556,22 @@ if __name__ == "__main__":
     print(color("This is red", RED))
     print(style("Bold red underlined!", BOLD, RED, UNDERLINE))
     
-    print("\nDone! Works on Linux, Mac, and Windows!")
+    print("\n--- Size alternatives ---")
+    print_small("Smaller/dimmer text")
+    print("Normal text")
+    print_big("BIGGER TEXT")
+    
+    print_header("Section Header")
+    print_title("Title with underline")
+    
+    print("\n--- Large text with styles ---")
+    print_large("HELLO", RED)
+    print_large("SUCCESS", GREEN, bold_it=True)
+    print_large("WARNING", YELLOW, bold_it=True, underline_it=True)
+    
+    print("\n--- HUGE ASCII text ---")
+    print_huge("HELLO", CYAN)
+    print_huge("2024", GREEN)
+    print_huge("OK!", BRIGHT_GREEN)
+    
+    print("Done! Works on Linux, Mac, and Windows!")
